@@ -1,13 +1,19 @@
 import pygame as pg
 import time
 from math import sin, cos, radians, degrees, pi, sqrt 
-  
+import os
+
+os.chdir("C:/Users/marti/Desktop/Weightlifting/ae1205-game")
+
+pos1 = pg.transform.scale(pg.image.load("-1.png"), (500, 500))
+pos2 = pg.transform.scale(pg.image.load("1.png"), (500, 500))
+pos3 = pg.transform.scale(pg.image.load("2.png"), (500, 500))
+pos4 = pg.transform.scale(pg.image.load("3.png"), (500, 500))
 
 pg.init()
 
 white = (255, 255, 255)
-green = (0, 255, 0)
-blue = (0, 0, 128)
+black = (0, 0, 0)
 
 
 MINSLEEP = 0.001  # Minimum interval to sleep the CPU
@@ -31,6 +37,9 @@ refreshtime = 0.5
 
 font = pg.font.Font('freesansbold.ttf', 32)
 
+score = 0
+k = 2
+
 
 while running:
 #SIMULATION TIME
@@ -48,15 +57,34 @@ while running:
         prevclicks = clicks
         clickrate = curclicks/refreshtime
     
-    text = font.render('Clickrate: ' + str(clickrate), True, green, blue)
+    text = font.render('Clickrate: ' + str(clickrate), True, black, white)
     textRect = text.get_rect()
-    textRect.center = (X // 2, Y // 2)
+    textRect.center = (X/2, 20)
     screen.blit(text, textRect)
     
-    print(clicks)
+    print(score)
     
     
     
+    if clickrate >= 4:
+        score = score + (clickrate-4) * k * dt
+    elif clickrate < 4 and score > 0:
+        score = score - 10*dt
+    else:
+        score = 0
+   
+    if score < 33:
+        pos = pos1
+    elif 66 > score >= 33:
+        pos = pos2
+    elif 100 > score >= 66:
+        pos = pos3
+    elif score >= 100:
+        pos = pos4
+        
+    posrect = pos.get_rect()
+    screen.blit(pos, posrect)
+        
     pg.display.flip()
     pg.event.pump()   
 #KEY COMMANDS   
