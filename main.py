@@ -1,6 +1,6 @@
 import pygame as pg
 import time
-from math import sin, cos, radians, degrees, pi, sqrt 
+from math import sin, cos, radians, degrees, pi, sqrt, floor
 import os
 
 os.chdir("C:/Users/marti/Desktop/Weightlifting/ae1205-game")
@@ -51,27 +51,36 @@ while running:
     
     t+=dt
     
+    screen.fill(white)
+    
     if t > refreshtime:
         t = 0
         curclicks = clicks - prevclicks
         prevclicks = clicks
         clickrate = curclicks/refreshtime
     
-    text = font.render('Clickrate: ' + str(clickrate), True, black, white)
-    textRect = text.get_rect()
-    textRect.center = (X/2, 20)
-    screen.blit(text, textRect)
+    text1 = font.render('Clickrate: ' + str(clickrate), True, black, white)
+    text1Rect = text1.get_rect()
+    text1Rect.center = (X/2, 20)
+    screen.blit(text1, text1Rect)
+    
+    text2 = font.render(str(floor(score)) + " %", True, black, white)
+    text2Rect = text2.get_rect()
+    text2Rect.center = (X/2, 60)
+    screen.blit(text2, text2Rect)
     
     print(score)
     
     
-    
-    if clickrate >= 4:
-        score = score + (clickrate-4) * k * dt
-    elif clickrate < 4 and score > 0:
-        score = score - 10*dt
+    if score < 100:
+        if clickrate >= 4:
+            score = score + (clickrate-4) * k * dt
+        elif clickrate < 4 and score > 0:
+            score = score - 10*dt
+        else:
+            score = 0
     else:
-        score = 0
+        score = 100;
    
     if score < 33:
         pos = pos1
@@ -83,6 +92,8 @@ while running:
         pos = pos4
         
     posrect = pos.get_rect()
+    posrect.centerx = X/2
+    posrect.centery = Y/2
     screen.blit(pos, posrect)
         
     pg.display.flip()
