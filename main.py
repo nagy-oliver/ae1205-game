@@ -1,9 +1,6 @@
 import pygame as pg
 import time
 from math import sin, cos, radians, degrees, pi, sqrt, floor
-import os
-
-os.chdir("C:/Users/marti/Desktop/Weightlifting/ae1205-game")
 
 pos1 = pg.transform.scale(pg.image.load("-1.png"), (500, 500))
 pos2 = pg.transform.scale(pg.image.load("1.png"), (500, 500))
@@ -21,24 +18,33 @@ tsim = 0.0  # Simulation time
 tstart =  0.001 * pg.time.get_ticks()
 dt = 1/60
 
-X = 600
+X = 550
 Y = 500
 
 screen = pg.display.set_mode((X, Y))
 
-pg.draw.rect(screen, (255, 255, 255), screen.get_rect())
+background = pg.image.load("Background.png")
+background = pg.transform.scale(background, (500, 500))
+backgroundRect = background.get_rect()
+backgroundRect.center = (X/2+25, Y/2)
+
+progress = pg.image.load("BAR.png")
+progress = pg.transform.scale(progress, (50, 500))
+progressRect = progress.get_rect()
+progressRect.center = (25, Y/2)
 
 clicks = 0
 clickrate = 0
 prevclicks = 0
 running = True
 t = 0
-refreshtime = 0.5
+refreshtime = 1
 
 font = pg.font.Font('freesansbold.ttf', 32)
 
 score = 0
-k = 2
+k = 4
+difficulty = 4
 
 
 while running:
@@ -51,7 +57,9 @@ while running:
     
     t+=dt
     
-    screen.fill(white)
+    screen.fill((200, 200, 200))
+    screen.blit(background, backgroundRect)
+    screen.blit(progress, progressRect)
     
     if t > refreshtime:
         t = 0
@@ -59,28 +67,15 @@ while running:
         prevclicks = clicks
         clickrate = curclicks/refreshtime
     
-    text1 = font.render('Clickrate: ' + str(clickrate), True, black, white)
-    text1Rect = text1.get_rect()
-    text1Rect.center = (X/2, 20)
-    screen.blit(text1, text1Rect)
-    
-    text2 = font.render(str(floor(score)) + " %", True, black, white)
-    text2Rect = text2.get_rect()
-    text2Rect.center = (X/2, 60)
-    screen.blit(text2, text2Rect)
-    
-    print(score)
-    
-    
     if score < 100:
-        if clickrate >= 4:
-            score = score + (clickrate-4) * k * dt
-        elif clickrate < 4 and score > 0:
+        if clickrate >= difficulty:
+            score = score + (clickrate-difficulty) * k * dt
+        elif clickrate < difficulty and score > 0:
             score = score - 10*dt
         else:
             score = 0
     else:
-        score = 100;
+        score = 100
    
     if score < 33:
         pos = pos1
@@ -90,25 +85,30 @@ while running:
         pos = pos3
     elif score >= 100:
         pos = pos4
-        
+    
+    # text1 = font.render('Clickrate: ' + str(clickrate), True, black, white)
+    # text1Rect = text1.get_rect()
+    # text1Rect.center = (X/2, 20)
+    # screen.blit(text1, text1Rect)
+    
+    # text2 = font.render(str(floor(score)) + " %", True, black, white)
+    # text2Rect = text2.get_rect()
+    # text2Rect.center = (X/2, 60)
+    # screen.blit(text2, text2Rect)
+    
     posrect = pos.get_rect()
-    posrect.centerx = X/2
+    posrect.centerx = X/2+25
     posrect.centery = Y/2
     screen.blit(pos, posrect)
         
     pg.display.flip()
-    pg.event.pump()   
-#KEY COMMANDS   
-
+#KEY COMMANDS
     for event in pg.event.get():
-            if event.type == pg.QUIT:
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_ESCAPE:
                 running = False
-            elif event.type == pg.KEYDOWN:
-                if event.key == pg.K_SPACE:
-                    clicks += 1
-    keys = pg.key.get_pressed()     
-# EXIT GAME
-    if keys[pg.K_ESCAPE]:
-        running = False
-
+            elif event.key == pg.K_SPACE:
+                clicks += 1  
+        elif event.type == pg.QUIT:
+            running = False   
 pg.quit()
