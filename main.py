@@ -11,6 +11,8 @@ pg.init()
 
 white = (255, 255, 255)
 black = (0, 0, 0)
+grey = (200, 200, 200)
+red = (200, 0, 0)
 
 
 MINSLEEP = 0.001  # Minimum interval to sleep the CPU
@@ -57,9 +59,8 @@ while running:
     
     t+=dt
     
-    screen.fill((200, 200, 200))
+    screen.fill(grey)
     screen.blit(background, backgroundRect)
-    screen.blit(progress, progressRect)
     
     if t > refreshtime:
         t = 0
@@ -85,7 +86,15 @@ while running:
         pos = pos3
     elif score >= 100:
         pos = pos4
+        
+    def myround(x, base=5):
+        return base * (x//base)
+        
+    height = myround(5*score)
+    pg.draw.rect(screen, red, pg.Rect(0, abs(500 - height), 50, height))
     
+    screen.blit(progress, progressRect)
+
     # text1 = font.render('Clickrate: ' + str(clickrate), True, black, white)
     # text1Rect = text1.get_rect()
     # text1Rect.center = (X/2, 20)
