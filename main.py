@@ -28,7 +28,7 @@ screen = pg.display.set_mode((X, Y))
 background = pg.image.load("Background.png")
 background = pg.transform.scale(background, (500, 500))
 backgroundRect = background.get_rect()
-backgroundRect.center = (X/2+25, Y/2)
+
 
 progress = pg.image.load("BAR.png")
 progress = pg.transform.scale(progress, (50, 500))
@@ -43,11 +43,12 @@ t = 0
 refreshtime = 1
 
 font = pg.font.Font('freesansbold.ttf', 32)
+font2 = pg.font.Font('freesansbold.ttf', 50)
 
 score = 0
 k = 4
 difficulty = 4
-
+inGame = False
 
 while running:
 #SIMULATION TIME
@@ -58,58 +59,86 @@ while running:
         time.sleep(remainder)
     
     t+=dt
-    
     screen.fill(grey)
     screen.blit(background, backgroundRect)
-    
-    if t > refreshtime:
-        t = 0
-        curclicks = clicks - prevclicks
-        prevclicks = clicks
-        clickrate = curclicks/refreshtime
-    
-    if score < 100:
-        if clickrate >= difficulty:
-            score = score + (clickrate-difficulty) * k * dt
-        elif clickrate < difficulty and score > 0:
-            score = score - 10*dt
-        else:
-            score = 0
-    else:
-        score = 100
-   
-    if score < 33:
-        pos = pos1
-    elif 66 > score >= 33:
-        pos = pos2
-    elif 100 > score >= 66:
-        pos = pos3
-    elif score >= 100:
-        pos = pos4
-        
-    def myround(x, base=5):
-        return base * (x//base)
-        
-    height = myround(5*score)
-    pg.draw.rect(screen, red, pg.Rect(0, abs(500 - height), 50, height))
-    
-    screen.blit(progress, progressRect)
 
-    # text1 = font.render('Clickrate: ' + str(clickrate), True, black, white)
-    # text1Rect = text1.get_rect()
-    # text1Rect.center = (X/2, 20)
-    # screen.blit(text1, text1Rect)
-    
-    # text2 = font.render(str(floor(score)) + " %", True, black, white)
-    # text2Rect = text2.get_rect()
-    # text2Rect.center = (X/2, 60)
-    # screen.blit(text2, text2Rect)
-    
-    posrect = pos.get_rect()
-    posrect.centerx = X/2+25
-    posrect.centery = Y/2
-    screen.blit(pos, posrect)
+    if inGame:
+        backgroundRect.center = (X/2+25, Y/2)
         
+        if t > refreshtime:
+            t = 0
+            curclicks = clicks - prevclicks
+            prevclicks = clicks
+            clickrate = curclicks/refreshtime
+        
+        if score < 100:
+            if clickrate >= difficulty:
+                score = score + (clickrate-difficulty) * k * dt
+            elif clickrate < difficulty and score > 0:
+                score = score - 10*dt
+            else:
+                score = 0
+        else:
+            score = 100
+    
+        if score < 33:
+            pos = pos1
+        elif score == 33:
+            pos = pos1 #OTHER MECHANICS TO BE ADDED
+        elif 66 > score > 33:
+            pos = pos2
+        elif score == 66:   
+            pos = pos2 #OTHER MECHANICS TO BE ADDED
+        elif 100 > score > 66:
+            pos = pos3
+        elif score >= 100:
+            pos = pos4
+            
+            text3 = font2.render("You Won!", True, white)
+            text3Rect = text3.get_rect()
+            text3Rect.center = (X/2, Y/4)
+            screen.blit(text3, text3Rect)
+            
+        def myround(x, base=5):
+            return base * (x//base)
+            
+        height = myround(5*score)
+        pg.draw.rect(screen, red, pg.Rect(0, abs(500 - height), 50, height))
+        
+        screen.blit(progress, progressRect)
+
+        # text1 = font.render('Clickrate: ' + str(clickrate), True, black, white)
+        # text1Rect = text1.get_rect()
+        # text1Rect.center = (X/2, 20)
+        # screen.blit(text1, text1Rect)
+        
+        # text2 = font.render(str(floor(score)) + " %", True, black, white)
+        # text2Rect = text2.get_rect()
+        # text2Rect.center = (X/2, 60)
+        # screen.blit(text2, text2Rect)
+        
+        posrect = pos.get_rect()
+        posrect.centerx = X/2+25
+        posrect.centery = Y/2
+        screen.blit(pos, posrect)
+    else:
+        backgroundRect.center = (X/2, Y/2)
+                
+        text1 = font.render("New Game", True, black, grey)
+        text1Rect = text1.get_rect()
+        text1Rect.center = (X/2, Y/2 - 20)
+        
+        screen.blit(text1, text1Rect)
+        
+        
+        text2 = font.render("Leaderboard", True, black, grey)
+        text2Rect = text2.get_rect()
+        text2Rect.center = (X/2, Y/2 + 40)
+        screen.blit(text2, text2Rect)
+
+
+        
+            
     pg.display.flip()
 #KEY COMMANDS
     for event in pg.event.get():
@@ -119,5 +148,10 @@ while running:
             elif event.key == pg.K_SPACE:
                 clicks += 1  
         elif event.type == pg.QUIT:
-            running = False   
+            running = False
+        elif event.type == pg.MOUSEBUTTONUP:
+            pos = pg.mouse.get_pos()
+            if text1Rect.collidepoint(pos):
+                inGame = True   
 pg.quit()
+    
