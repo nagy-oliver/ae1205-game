@@ -80,10 +80,11 @@ class Menu:
                     break
             with open("leaderboard.txt", "w") as fp:
                 fp.writelines([f"{i[0]}\t{i[1]}\n" for i in self.leaders])
-            self.state == 3
+            self.weights = []
+            self.state = 3
         # Leaderboard     
         elif self.state == 3:
-            pass
+            self.state = 0
         # Manual
         elif self.state == 4:
             pass
@@ -151,10 +152,26 @@ class Menu:
         screen.blit(playerNameText, playerNameTextRect)
         
     def leaderboard(self, screen: pg.Surface):
+        pg.draw.rect(screen, c.grey, pg.Rect(50, 25, 450, 450))
 
-        leaderScreen = pg.draw.rect(screen, c.red, pg.Rect(450, 450))
-        # leaderScreen.center = 
-        # screen.blit(self.progress, self.progressRect)
+        textLeader = c.mainFont.render("NAME      SCORE", True, c.black)
+        textLeaderRect = textLeader.get_rect()
+        textLeaderRect.center = (c.screenX/2, 50)
+
+        screen.blit(textLeader, textLeaderRect)
+        
+        for i in range(len(self.leaders[:8])):
+            textLeaderName = c.mainFont.render(self.leaders[i][0][:10], True, c.black)
+            textLeaderNameRect = textLeaderName.get_rect()
+            textLeaderNameRect.topleft = (70, 70 + i*50)
+            textLeaderScore = c.mainFont.render(str(self.leaders[i][1]), True, c.black)
+            textLeaderScoreRect = textLeaderScore.get_rect()
+            textLeaderScoreRect.topright = (450, 70 + i*50)
+            
+            screen.blit(textLeaderScore, textLeaderScoreRect)
+            screen.blit(textLeaderName, textLeaderNameRect)
+
+
 
     def manual(self, screen: pg.Surface):
         pass

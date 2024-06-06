@@ -127,6 +127,5 @@ class Game:
         posrect.centerx = c.screenX/2+25
         posrect.centery = c.screenY/2
         screen.blit(pos, posrect)
-
-
+        
         return 2
