@@ -29,6 +29,7 @@ background = pg.image.load("Background.png")
 background = pg.transform.scale(background, (500, 500))
 backgroundRect = background.get_rect()
 
+input = ""
 
 progress = pg.image.load("BAR.png")
 progress = pg.transform.scale(progress, (50, 500))
@@ -49,6 +50,12 @@ score = 0
 k = 4
 difficulty = 4
 inGame = False
+inChoose = False
+inLead = False
+
+wnum = 0
+wnums = ""
+weight = 3*[0]
 
 while running:
 #SIMULATION TIME
@@ -121,23 +128,40 @@ while running:
         posrect.centerx = X/2+25
         posrect.centery = Y/2
         screen.blit(pos, posrect)
+
     else:
-        backgroundRect.center = (X/2, Y/2)
-                
-        text1 = font.render("New Game", True, black, grey)
-        text1Rect = text1.get_rect()
-        text1Rect.center = (X/2, Y/2 - 20)
-        
-        screen.blit(text1, text1Rect)
-        
-        
-        text2 = font.render("Leaderboard", True, black, grey)
-        text2Rect = text2.get_rect()
-        text2Rect.center = (X/2, Y/2 + 40)
-        screen.blit(text2, text2Rect)
+        backgroundRect.center = (X/2, Y/2)            
+        if inChoose:
+            if wnum == 0: wnums = "first"
+            elif wnum == 1: wnums = "second"
+            elif wnum == 2: wnums = "third"
+            
+            textin = font.render("Input your " + wnums + " weight:", True, black, grey)
+            textinRect = textin.get_rect()
+            textinRect.center = (X/2, Y/2 - 20)
+            
+            screen.blit(textin, textinRect)
+            
+            if len(input) == 3:
+                weight[wnum] = input
+                wnum += 1
+                input = ""
+            if wnum == 3:
+                inChoose = False
+                inGame = True
 
-
-        
+        else:
+            text1 = font.render("New Game", True, black, grey)
+            text1Rect = text1.get_rect()
+            text1Rect.center = (X/2, Y/2 - 20)
+            
+            screen.blit(text1, text1Rect)
+            
+            
+            text2 = font.render("Leaderboard", True, black, grey)
+            text2Rect = text2.get_rect()
+            text2Rect.center = (X/2, Y/2 + 40)
+            screen.blit(text2, text2Rect)
             
     pg.display.flip()
 #KEY COMMANDS
@@ -146,12 +170,19 @@ while running:
             if event.key == pg.K_ESCAPE:
                 running = False
             elif event.key == pg.K_SPACE:
-                clicks += 1  
+                clicks += 1
+            elif event.key == pg.K_BACKSPACE:
+                input = input[:-1]
+            elif event.key == pg.K_0 or event.key == pg.K_1 or event.key == pg.K_2 or event.key == pg.K_3 or event.key == pg.K_4 or event.key == pg.K_5 or event.key == pg.K_6 or event.key == pg.K_7 or event.key == pg.K_8 or event.key == pg.K_9:
+                input += event.unicode
         elif event.type == pg.QUIT:
             running = False
         elif event.type == pg.MOUSEBUTTONUP:
             pos = pg.mouse.get_pos()
             if text1Rect.collidepoint(pos):
-                inGame = True   
+                inChoose = True
+                input = ""
+                wnum = 0
+            
 pg.quit()
     
