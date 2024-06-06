@@ -2,10 +2,12 @@ import pygame as pg
 import time
 from math import sin, cos, radians, degrees, pi, sqrt, floor
 
-pos1 = pg.transform.scale(pg.image.load("-1.png"), (500, 500))
-pos2 = pg.transform.scale(pg.image.load("1.png"), (500, 500))
-pos3 = pg.transform.scale(pg.image.load("2.png"), (500, 500))
-pos4 = pg.transform.scale(pg.image.load("3.png"), (500, 500))
+from game import Game
+from menu import Menu
+
+posList = []
+for i in range(4):
+    posList.append(pg.transform.scale(pg.image.load(f"assets/{i}.png"), (500, 500)))
 
 pg.init()
 
@@ -25,13 +27,13 @@ Y = 500
 
 screen = pg.display.set_mode((X, Y))
 
-background = pg.image.load("Background.png")
+background = pg.image.load("assets/Background.png")
 background = pg.transform.scale(background, (500, 500))
 backgroundRect = background.get_rect()
 
 input = ""
 
-progress = pg.image.load("BAR.png")
+progress = pg.image.load("assets/BAR.png")
 progress = pg.transform.scale(progress, (50, 500))
 progressRect = progress.get_rect()
 progressRect.center = (25, Y/2)
@@ -71,7 +73,7 @@ while running:
 
     if inGame:
         backgroundRect.center = (X/2+25, Y/2)
-        
+        pg.transform.scale(screen, (1000, 2000))
         if t > refreshtime:
             t = 0
             curclicks = clicks - prevclicks
@@ -89,17 +91,17 @@ while running:
             score = 100
     
         if score < 33:
-            pos = pos1
+            pos = posList[0]
         elif score == 33:
-            pos = pos1 #OTHER MECHANICS TO BE ADDED
+            pos = posList[0] #OTHER MECHANICS TO BE ADDED
         elif 66 > score > 33:
-            pos = pos2
+            pos = posList[1]
         elif score == 66:   
-            pos = pos2 #OTHER MECHANICS TO BE ADDED
+            pos = posList[1] #OTHER MECHANICS TO BE ADDED
         elif 100 > score > 66:
-            pos = pos3
+            pos = posList[2]
         elif score >= 100:
-            pos = pos4
+            pos = posList[3]
             
             text3 = font2.render("You Won!", True, white)
             text3Rect = text3.get_rect()
