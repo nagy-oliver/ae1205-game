@@ -9,17 +9,17 @@ class Menu:
     state = 0
     # 0 = main
     # 1 = weight selection
-    # 2 = leaderboard
-    # 3 = finished
+    # 2 = finished
+    # 3 = leaderboard
     # 4 = manual
 
     buttonIndex = 0
     buttonCount = None
 
-    playerName = None
+    playerName = ""
     weightEntry = 0
     weights = []
-    maxweight = None
+    maxWeight = 0
 
     leaders = []
     with open("leaderboard.txt", "r") as fp:
@@ -49,6 +49,8 @@ class Menu:
                 self.weightEntry = self.weightEntry*10 + event
                 if self.weightEntry >= 100:
                     self.buttonClick()
+            elif isinstance(event, str) and self.state == 2:
+                self.playerName += event
                       
     def buttonClick(self):
         # Main menu
@@ -56,12 +58,13 @@ class Menu:
             # "New Game" button
             if self.buttonIndex == 0:
                 self.state = 1
+                self.playerName = ""
             # "Leaderboard" button        
             elif self.buttonIndex == 1:
-                self.state = 2 
+                self.state = 3 
             # "Manual" button
             elif self.buttonIndex == 2:
-                self.state = 3         
+                self.state = 4         
             # "Quit" button        
             elif self.buttonIndex == 3:
                 self.mainState = 0
@@ -69,11 +72,20 @@ class Menu:
         elif self.state == 1:
             self.weights.append(self.weightEntry)
             self.weightEntry = 0 
-        # Leaderboard
+        # Finished
         elif self.state == 2:
-            pass   
-        # Manual     
+            for index, i in enumerate(self.leaders):
+                if self.maxWeight > i[1]:
+                    self.leaders.insert(index, (self.playerName, self.maxWeight))
+                    break
+            with open("leaderboard.txt", "w") as fp:
+                fp.writelines([f"{i[0]}\t{i[1]}\n" for i in self.leaders])
+            self.state == 3
+        # Leaderboard     
         elif self.state == 3:
+            pass
+        # Manual
+        elif self.state == 4:
             pass
                              
     def mainMenu(self, screen: pg.Surface):
@@ -123,10 +135,27 @@ class Menu:
 
         screen.blit(text1, text1Rect)
 
-    def leaderboard(self, screen: pg.Surface):
-        pass
     def finished(self, screen: pg.Surface):
-        pass
+        #Finished text
+        text2 = c.mainFont.render("Enter your name and pres ENTER: ", True, c.black, c.grey)
+        text2Rect = text2.get_rect()
+        text2Rect.center = (c.screenX/2, c.screenY/2 - 20)
+
+        screen.blit(text2, text2Rect)
+
+        #Enter player name
+        playerNameText = c.mainFont.render(self.playerName, True, c.black, c.grey)
+        playerNameTextRect = playerNameText.get_rect()
+        playerNameTextRect.center = (c.screenX/2, c.screenY/2 - 20)
+
+        screen.blit(playerNameText, playerNameTextRect)
+        
+    def leaderboard(self, screen: pg.Surface):
+
+        leaderScreen = pg.draw.rect(screen, c.red, pg.Rect(450, 450))
+        # leaderScreen.center = 
+        # screen.blit(self.progress, self.progressRect)
+
     def manual(self, screen: pg.Surface):
         pass
 
@@ -137,9 +166,9 @@ class Menu:
         elif self.state == 1:
             self.weightSelection(screen)
         elif self.state == 2:
-            self.leaderboard(screen)
-        elif self.state == 3:
             self.finished(screen)
+        elif self.state == 3:
+            self.leaderboard(screen)
         elif self.state == 4:
             self.manual(screen)
         

@@ -1,2 +1,7 @@
-jozko   120
-ivan    40
+MARTIN	789
+OLIVER	789
+OLIVER	456
+dezko	80
+ivan	40
+jozko	12
+kokot	0

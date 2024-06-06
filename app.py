@@ -49,8 +49,12 @@ while state:
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
                 state = 0
-            elif(event.unicode in [str(i) for i in range(10)]):
+            elif event.unicode in [str(i) for i in range(10)]:
                 events.append(int(event.unicode))
+            elif event.unicode == "":
+                events.append(event.key)
+            elif 65 <= ord(event.unicode.upper()) <= 90:
+                events.append(event.unicode.upper())
             else:
                 events.append(event.key)
         elif event.type == pg.QUIT:
@@ -66,6 +70,13 @@ while state:
         if not game:
             game = Game(menu.weights, dt)
         state = game.generate(screen, events)
+        if state == 1:
+            menu.mainState = 1
+            menu.state = 2
+            menu.maxWeight = game.maxWeight
+            game = None
+            
+            
 
     # Generate screen
     pg.display.flip()
