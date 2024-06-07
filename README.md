@@ -1,4 +1,5 @@
 # AE1205 Weightlifting Game
+Made by Martin Hajek and Oliver Nagy
 
 ## Before running
 Make sure you have pygame installed on your system or in your activated venv. To install pygame:
