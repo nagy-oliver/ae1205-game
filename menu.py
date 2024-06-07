@@ -45,7 +45,7 @@ class Menu:
         if pg.K_RETURN in events:
             self.buttonClick()
         for event in events:
-            if event in range(10) :
+            if event in range(10) and self.state == 1 :
                 self.weightEntry = self.weightEntry*10 + event
                 if self.weightEntry >= 100:
                     self.buttonClick()
@@ -120,7 +120,7 @@ class Menu:
         screen.blit(but4, but4Rect)
 
 
-    def weightSelection(self, screen: pg.Surface):
+    def placeholder(self, screen: pg.Surface):
         # Number Input
         if len(self.weights) == 0: entryNum = "first"
         elif len(self.weights) == 1: entryNum ="second"
@@ -135,6 +135,22 @@ class Menu:
         text1Rect.center = (c.screenX/2, c.screenY/2 - 20)
 
         screen.blit(text1, text1Rect)
+
+    def weightSelection(self, screen: pg.Surface):
+        if len(self.weights) == 3:
+            self.mainState = 2
+            return
+        text1 = c.titleFont.render("Weight Selection", True, c.black, c.grey)
+        text1Rect = text1.get_rect()
+        text1Rect.center = (c.screenX/2, c.screenY/2 - 20)
+        screen.blit(text1, text1Rect)
+        
+        for i in range(3):
+            textWeightI = c.mainFont.render(f"Attempt {i+1}", True, c.black, c.red if len(self.weights) == i else c.grey)
+            textWeightIRect = textWeightI.get_rect()
+            textWeightIRect.topleft = (50, 100 + i*50)
+            screen.blit(textWeightI, textWeightIRect)
+
 
     def finished(self, screen: pg.Surface):
         #Finished text
