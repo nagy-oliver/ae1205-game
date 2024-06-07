@@ -14,9 +14,5 @@ In order to run, follow these steps:
 3. Play based on instructions shown in the game window
 
 # TODO - delete after completing all tasks
-
-## High priority
-- comment out cheatz
-
 ## Low priority
 - music
