@@ -15,7 +15,7 @@ class Menu:
 
     # Variables for menu selection
     buttonIndex = 0
-    buttonCount = None
+    buttonCount = 1
     def buttonColor(self, reqIndex):
         if reqIndex == self.buttonIndex:
             color = c.red
@@ -156,9 +156,9 @@ class Menu:
             elif len(self.weights) < i:
                 chosenWeighttextI = 0
             else:
-                chosenWeighttextI = self.weights[i]
-                        
-            chosenWeightI = c.mainFont.render(str(chosenWeighttextI), True, c.black, c.grey)
+                chosenWeighttextI = self.weights[i]   
+
+            chosenWeightI = c.mainFont.render(str(chosenWeighttextI), True, c.black, c.red if len(self.weights) == i else c.grey)
             chosenWeightIRect = chosenWeightI.get_rect()
             chosenWeightIRect.center = (c.screenX - 170, c.screenY/2 - 80 + i*80)
             screen.blit(chosenWeightI, chosenWeightIRect)
