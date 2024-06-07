@@ -8,7 +8,7 @@ red = (200, 0, 0)
 
 # Fonts
 pg.font.init()
-titleFont = pg.font.Font('assets/joystix monospace.otf', 50)
+titleFont = pg.font.Font('assets/joystix monospace.otf', 40)
 mainFont = pg.font.Font('assets/joystix monospace.otf', 32)
 
 # Screen parameters

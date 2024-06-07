@@ -1,12 +1,13 @@
 import pygame as pg
 import common as c
+import time
 
 class Menu:
     # State of app
     mainState = 1
     
     # Local state of menu
-    state = 0
+    state = 4
     # 0 = main
     # 1 = weight selection
     # 2 = finished
@@ -20,6 +21,9 @@ class Menu:
     weightEntry = 0
     weights = []
     maxWeight = 0
+    
+    dt = None
+    waitTime = 1
 
     leaders = []
     with open("leaderboard.txt", "r") as fp:
@@ -27,6 +31,10 @@ class Menu:
             name, weight = i.split()
             leaders.append((name, int(weight)))
             
+    # Load manual
+    manualImage = pg.image.load("assets/MANUAL.png")
+    manualImage = pg.transform.scale(manualImage, (450, 450))
+    manualRect = manualImage.get_rect()            
     
     def buttonColor(self, reqIndex):
         if reqIndex == self.buttonIndex:
@@ -71,7 +79,8 @@ class Menu:
         # Weight selection
         elif self.state == 1:
             self.weights.append(self.weightEntry)
-            self.weightEntry = 0 
+            self.weightEntry = 0
+            
         # Finished
         elif self.state == 2:
             for index, i in enumerate(self.leaders):
@@ -87,7 +96,7 @@ class Menu:
             self.state = 0
         # Manual
         elif self.state == 4:
-            pass
+            self.state = 0
                              
     def mainMenu(self, screen: pg.Surface):
         self.buttonCount = 4
@@ -119,37 +128,42 @@ class Menu:
 
         screen.blit(but4, but4Rect)
 
-
-    def placeholder(self, screen: pg.Surface):
-        # Number Input
-        if len(self.weights) == 0: entryNum = "first"
-        elif len(self.weights) == 1: entryNum ="second"
-        elif len(self.weights) == 2: entryNum ="third"
-        # Go to game
-        elif len(self.weights) == 3: 
-            self.mainState = 2
-            return
-
-        text1 = c.mainFont.render("Input your " + entryNum + " weight:", True, c.black, c.grey)
-        text1Rect = text1.get_rect()
-        text1Rect.center = (c.screenX/2, c.screenY/2 - 20)
-
-        screen.blit(text1, text1Rect)
-
     def weightSelection(self, screen: pg.Surface):
-        if len(self.weights) == 3:
-            self.mainState = 2
-            return
-        text1 = c.titleFont.render("Weight Selection", True, c.black, c.grey)
+        #Go to game when having 3 weights
+        
+        
+        #Weight selection title
+        text1 = c.titleFont.render("Weight\nSelection", True, c.black, c.grey)
         text1Rect = text1.get_rect()
-        text1Rect.center = (c.screenX/2, c.screenY/2 - 20)
+        text1Rect.center = (c.screenX/2, 50)
         screen.blit(text1, text1Rect)
         
+        #Attempt titles
         for i in range(3):
             textWeightI = c.mainFont.render(f"Attempt {i+1}", True, c.black, c.red if len(self.weights) == i else c.grey)
             textWeightIRect = textWeightI.get_rect()
-            textWeightIRect.topleft = (50, 100 + i*50)
+            textWeightIRect.center = (170, c.screenY/2 - 80 + i*80)
             screen.blit(textWeightI, textWeightIRect)
+            
+            #showing the inputed weight
+            if len(self.weights) == i:
+                chosenWeighttextI = self.weightEntry
+            elif len(self.weights) < i:
+                chosenWeighttextI = 0
+            else:
+                chosenWeighttextI = self.weights[i]
+                        
+            chosenWeightI = c.mainFont.render(str(chosenWeighttextI), True, c.black, c.grey)
+            chosenWeightIRect = chosenWeightI.get_rect()
+            chosenWeightIRect.center = (c.screenX - 170, c.screenY/2 - 80 + i*80)
+            screen.blit(chosenWeightI, chosenWeightIRect)
+        
+        if len(self.weights) == 3:
+            self.waitTime -= self.dt
+            if self.waitTime <= 0:
+                self.waiTime = 1
+                self.mainState = 2
+            return
 
 
     def finished(self, screen: pg.Surface):
@@ -170,7 +184,7 @@ class Menu:
     def leaderboard(self, screen: pg.Surface):
         pg.draw.rect(screen, c.grey, pg.Rect(50, 25, 450, 450))
 
-        textLeader = c.mainFont.render("NAME      SCORE", True, c.black)
+        textLeader = c.mainFont.render("NAME      WEIGHT", True, c.black)
         textLeaderRect = textLeader.get_rect()
         textLeaderRect.center = (c.screenX/2, 50)
 
@@ -187,13 +201,15 @@ class Menu:
             screen.blit(textLeaderScore, textLeaderScoreRect)
             screen.blit(textLeaderName, textLeaderNameRect)
 
-
-
     def manual(self, screen: pg.Surface):
-        pass
+        # Manual image
+        self.manualRect.center = (c.screenX/2, c.screenY/2)
+        screen.blit(self.manualImage, self.manualRect)
 
     # Draw the corresponding menu based on state var
-    def generate(self, screen: pg.Surface):
+    def generate(self, screen: pg.Surface, dt):
+        self.dt = dt
+        
         if self.state == 0: 
             self.mainMenu(screen)
         elif self.state == 1:

@@ -64,7 +64,7 @@ while state:
     if state == 0:
         break
     if state == 1:
-        state = menu.generate(screen)
+        state = menu.generate(screen, dt)
         menu.eventHandler(events)
     if state == 2:
         if not game:
