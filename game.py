@@ -140,13 +140,9 @@ class Game:
         # Draw position
         if self.score < 33:
             pos = self.posList[0]
-        elif self.score == 33:
-            pos = self.posList[0] #OTHER MECHANICS MAY BE ADDED
-        elif 66 > self.score > 33:
+        elif 66 > self.score >= 33:
             pos = self.posList[1]
-        elif self.score == 66:   
-            pos = self.posList[1] #OTHER MECHANICS MAY BE ADDED
-        elif 100 > self.score > 66:
+        elif 100 > self.score >= 66:
             pos = self.posList[2]
         # Winning state 
         elif self.score >= 100:

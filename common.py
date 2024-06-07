@@ -15,4 +15,7 @@ mainFont = pg.font.Font('assets/joystix monospace.otf', 32)
 screenX = 550
 screenY = 500
 
-
+pg.mixer.init()
+arrowSound = pg.mixer.Sound("assets/ARROW.wav")
+enterSound = pg.mixer.Sound("assets/pop.wav")
+moanSound = pg.mixer.Sound("assets/Moan.wav")

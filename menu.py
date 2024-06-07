@@ -44,11 +44,14 @@ class Menu:
     def eventHandler(self, events):
         # Menu moving
         if pg.K_UP in events:
+            c.arrowSound.play()
             self.buttonIndex = (self.buttonIndex - 1) % (self.buttonCount)
         if pg.K_DOWN in events:
+            c.arrowSound.play()
             self.buttonIndex = (self.buttonIndex + 1) % (self.buttonCount)
         # Choice accept
         if pg.K_RETURN in events:
+            c.enterSound.play()
             self.buttonClick()
         # User typing
         if pg.K_BACKSPACE in events:
@@ -91,6 +94,8 @@ class Menu:
                 if self.maxWeight > i[1]:
                     self.leaders.insert(index, (self.playerName, self.maxWeight))
                     break
+            if (self.playerName, self.maxWeight) not in self.leaders:
+                self.leaders.append((self.playerName, self.maxWeight))
             with open("leaderboard.txt", "w") as fp:
                 fp.writelines([f"{i[0]}\t{i[1]}\n" for i in self.leaders])
             self.weights = []
