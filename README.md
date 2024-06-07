@@ -10,5 +10,5 @@ pip install pygame
 
 In order to run, follow these steps:
 1. Download and unzip the project folder
-2. Double click the start.bat script
+2. Double click the start.bat script (if that does not work, run the app.py file)
 3. Play based on instructions shown in the game window
