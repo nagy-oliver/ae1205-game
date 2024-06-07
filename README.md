@@ -1,13 +1,22 @@
-# TODO
+# AE1205 Weightlifting Game
+
+## Before running
+Make sure you have pygame installed on your system or in your activated venv. To install pygame:
+```
+pip install pygame
+```
+
+## How to run
+
+In order to run, follow these steps:
+1. Download and unzip the project folder
+2. Double click the start.bat script
+3. Play based on instructions shown in the game window
+
+# TODO - delete after completing all tasks
 
 ## High priority
-- show weight entered, make that screen nicer
-- manual
-- add timer to attempts
-- change enter your name screen
+- comment out cheatz
 
 ## Low priority
-- show which attempt it is
-- change you win text
-- make it a little less vulnerable
-- code comments
+- music

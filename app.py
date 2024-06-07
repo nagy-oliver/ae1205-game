@@ -1,7 +1,6 @@
 # External imports
 import pygame as pg
 import time
-from math import sin, cos, radians, degrees, pi, sqrt, floor
 
 # Local imports
 import common as c
@@ -9,7 +8,6 @@ from game import Game
 from menu import Menu
 
 #Initialization
-## pygame, menu, initial general variables (such as dt etc.)
 MINSLEEP = 0.001  # Minimum interval to sleep the CPU
 tsim = 0.0  # Simulation time
 tstart =  0.001 * pg.time.get_ticks()
@@ -77,7 +75,6 @@ while state:
             game = None
             
             
-
     # Generate screen
     pg.display.flip()
 

@@ -1,6 +1,5 @@
 import pygame as pg
 import common as c
-import time
 
 class Menu:
     # State of app
@@ -14,35 +13,34 @@ class Menu:
     # 3 = leaderboard
     # 4 = manual
 
+    # Variables for menu selection
     buttonIndex = 0
     buttonCount = None
-
-    playerName = ""
-    weightEntry = 0
-    weights = []
-    maxWeight = 0
-    
-    dt = None
-    waitTime = 1
-
-    leaders = []
-    with open("leaderboard.txt", "r") as fp:
-        for i in fp:
-            name, weight = i.split()
-            leaders.append((name, int(weight)))
-            
-    # Load manual
-    manualImage = pg.image.load("assets/MANUAL.png")
-    manualImage = pg.transform.scale(manualImage, (450, 450))
-    manualRect = manualImage.get_rect()            
-    
     def buttonColor(self, reqIndex):
         if reqIndex == self.buttonIndex:
             color = c.red
         else:
             color = None
         return color
-
+    # Game info
+    playerName = ""
+    weightEntry = 0
+    weights = []
+    maxWeight = 0
+    # Time control 
+    dt = None
+    waitTime = 1
+    # Load leaderboard
+    leaders = []
+    with open("leaderboard.txt", "r") as fp:
+        for i in fp:
+            name, weight = i.split()
+            leaders.append((name, int(weight)))   
+    # Load manual
+    manualImage = pg.image.load("assets/MANUAL.png")
+    manualImage = pg.transform.scale(manualImage, (450, 450))
+    manualRect = manualImage.get_rect()            
+    # Handle key presses
     def eventHandler(self, events):
         # Menu moving
         if pg.K_UP in events:
@@ -52,6 +50,9 @@ class Menu:
         # Choice accept
         if pg.K_RETURN in events:
             self.buttonClick()
+        # User typing
+        if pg.K_BACKSPACE in events:
+            self.playerName = self.playerName[:-1]
         for event in events:
             if event in range(10) and self.state == 1 :
                 self.weightEntry = self.weightEntry*10 + event
@@ -59,7 +60,7 @@ class Menu:
                     self.buttonClick()
             elif isinstance(event, str) and self.state == 2:
                 self.playerName += event
-                      
+    # Handle enter button            
     def buttonClick(self):
         # Main menu
         if self.state == 0:
@@ -78,11 +79,14 @@ class Menu:
                 self.mainState = 0
         # Weight selection
         elif self.state == 1:
-            self.weights.append(self.weightEntry)
-            self.weightEntry = 0
+            if len(self.weights) < 3:
+                self.weights.append(self.weightEntry)
+                self.weightEntry = 0
             
         # Finished
         elif self.state == 2:
+            if self.playerName == "":
+                return
             for index, i in enumerate(self.leaders):
                 if self.maxWeight > i[1]:
                     self.leaders.insert(index, (self.playerName, self.maxWeight))
@@ -128,15 +132,16 @@ class Menu:
 
         screen.blit(but4, but4Rect)
 
-    def weightSelection(self, screen: pg.Surface):
-        #Go to game when having 3 weights
-        
-        
+    def weightSelection(self, screen: pg.Surface):    
         #Weight selection title
-        text1 = c.titleFont.render("Weight\nSelection", True, c.black, c.grey)
+        text1 = c.titleFont.render("Weight", True, c.black, c.grey)
         text1Rect = text1.get_rect()
-        text1Rect.center = (c.screenX/2, 50)
+        text1Rect.center = (c.screenX/2, 40)
+        text2 = c.titleFont.render("Selection", True, c.black, c.grey)
+        text2Rect = text2.get_rect()
+        text2Rect.center = (c.screenX/2, 80)
         screen.blit(text1, text1Rect)
+        screen.blit(text2, text2Rect)
         
         #Attempt titles
         for i in range(3):
@@ -157,27 +162,30 @@ class Menu:
             chosenWeightIRect = chosenWeightI.get_rect()
             chosenWeightIRect.center = (c.screenX - 170, c.screenY/2 - 80 + i*80)
             screen.blit(chosenWeightI, chosenWeightIRect)
-        
+        # Start game after 3 weights
         if len(self.weights) == 3:
             self.waitTime -= self.dt
             if self.waitTime <= 0:
-                self.waiTime = 1
+                self.waitTime = 1
                 self.mainState = 2
             return
 
-
     def finished(self, screen: pg.Surface):
         #Finished text
-        text2 = c.mainFont.render("Enter your name and pres ENTER: ", True, c.black, c.grey)
-        text2Rect = text2.get_rect()
-        text2Rect.center = (c.screenX/2, c.screenY/2 - 20)
+        textFinised1 = c.mainFont.render("Enter your name", True, c.black, c.grey)
+        textFinised1Rect = textFinised1.get_rect()
+        textFinised1Rect.center = (c.screenX/2, 80)
+        screen.blit(textFinised1, textFinised1Rect)
 
-        screen.blit(text2, text2Rect)
+        textFinised2 = c.mainFont.render("and press ENTER:", True, c.black, c.grey)
+        textFinised2Rect = textFinised2.get_rect()
+        textFinised2Rect.center = (c.screenX/2,  120)
+        screen.blit(textFinised2, textFinised2Rect)
 
         #Enter player name
         playerNameText = c.mainFont.render(self.playerName, True, c.black, c.grey)
         playerNameTextRect = playerNameText.get_rect()
-        playerNameTextRect.center = (c.screenX/2, c.screenY/2 - 20)
+        playerNameTextRect.center = (c.screenX/2, c.screenY/2 + 20)
 
         screen.blit(playerNameText, playerNameTextRect)
         
