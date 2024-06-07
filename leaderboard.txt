@@ -11,5 +11,6 @@ LILI	97
 dezko	80
 REKOR	79
 SOME	78
+ASDKLJF	69
 ivan	40
 jozko	12

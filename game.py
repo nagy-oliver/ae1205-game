@@ -17,6 +17,7 @@ class Game:
     k = 4
 
     # Clicking variables
+    multiplier = 3   # score multiplier
     score = 0
     clicks = 0
     prevclicks = 0 
@@ -29,7 +30,7 @@ class Game:
 
     # End game wait
     waitTime = 1
-    attemptTime = 30
+    attemptTime = 15
 
     # Character images
     posList = []
@@ -50,7 +51,7 @@ class Game:
     def __init__(self, weights, dt):
         self.weights = weights
         for weight in weights:
-            self.difficulties.append(weight/20)
+            self.difficulties.append(weight/800)
 
         self.dt = dt
     
@@ -63,14 +64,22 @@ class Game:
         self.prevclicks = 0
         self.t = 0
         self.waitTime = 1
-        self.attemptTime = 30
+        self.attemptTime = 15
         # End game after third attempt
         if self.attempt == 3:
             self.attempt = 0
             return 1
         return 2
-
+    
     def playing(self, events):
+        self.t += self.dt
+        if self.t > self.refreshtime:
+            self.t = 0
+            # Change to game over if time runs out
+            self.attemptTime -= self.refreshtime
+            if self.attemptTime <= 0:
+                self.state = 2
+                return
         # Registering of clicks
         for event in events:
             if event == pg.K_SPACE:
@@ -78,31 +87,14 @@ class Game:
             # Development tools
             # elif event == pg.K_COMMA:
             #     self.score = 100
-        
-        # Clickrate counter, round timer
-        self.t += self.dt
-        if self.t > self.refreshtime:
-            self.t = 0
-            curclicks = self.clicks - self.prevclicks
-            self.prevclicks = self.clicks
-            self.clickrate = curclicks/self.refreshtime
-            # Change to game over if time runs out
-            self.attemptTime -= self.refreshtime
-            if self.attemptTime <= 0:
-                self.state = 2
-                return
-        # Score counter
-        if self.score < 100:
-            if self.clickrate >= self.difficulties[self.attempt]:
-                self.score = self.score + (self.clickrate-self.difficulties[self.attempt]) * self.k * self.dt
-            elif self.clickrate < self.difficulties[self.attempt] and self.score > 0:
-                self.score = self.score - 10*self.dt
-            else:
-                self.score = 0
-        else:
+        self.score += self.clicks*self.multiplier
+        self.score -= self.difficulties[self.attempt]
+
+        self.clicks = 0
+        if self.score >= 100:
             self.score = 100
-            self.state = 1
-    
+            self.state = 1    
+
     def successful(self, screen: pg.Surface):
         #Text after attempt success
         self.endText = "Attempt succesful!"
